@@ -1,0 +1,141 @@
+//sorry bhai c# mai likh diya java ka ide install krne ka time nhi tha aur error aa rhe the bht
+
+namespace ConsoleApp2
+{
+    interface IStack
+    {
+        int size();
+        void display();
+
+        void push(int val);
+
+        int pop();
+
+        int top();
+    }
+
+    public class BaseStack : IStack
+    {
+        protected int TopIndex;
+        protected int[] StackArray;
+        public BaseStack(int maxSize)
+        {
+            this.StackArray = new int[maxSize];
+            this.TopIndex = -1;
+        }
+        public void display()
+        {
+            if (this.TopIndex == -1)
+            {
+                throw new Exception("Stack Underflow Exception");
+            }
+            StringBuilder str = new StringBuilder();
+            str.Append("[");
+            for (int i = 0; i <= this.TopIndex; i++)
+            {
+                str.Append(this.StackArray[i] + ",");
+            }
+            str.Remove(str.Length - 1, 1);
+            str.Append("]");
+            Console.WriteLine(str.ToString());
+            // Equivalent to System.out.ptintln()
+
+        }
+
+        public int pop()
+        {
+            if (this.TopIndex == -1)
+            {
+                throw new Exception("Stack Underflow Exception");
+            }
+            int lastElement = this.StackArray[this.TopIndex];
+            this.StackArray[this.TopIndex] = -1;
+            this.TopIndex--;
+            return lastElement;
+        }
+
+        public virtual void push(int val)
+        {
+            if (this.TopIndex == this.StackArray.Length - 1)
+            {
+                throw new Exception("Stack OverFlow Exception");
+            }
+            this.StackArray[++this.TopIndex] = val;
+
+        }
+
+        public int size()
+        {
+            return this.TopIndex + 1;
+        }
+
+        public int top()
+        {
+            if (this.TopIndex == -1)
+            {
+                throw new Exception("Stack Underflow Exception");
+            }
+            return this.StackArray[this.TopIndex];
+        }
+    }
+
+    public class DynamicStack : BaseStack
+    {
+        private int sizetobeincreased;
+        public DynamicStack():base(10)
+        {
+            this.sizetobeincreased = 10;
+        }
+        public override void push(int val)
+        {
+            if (base.StackArray.Length == base.size())
+            {
+                this.IncreaseStackSize();
+            }
+            base.push(val);
+        }
+        private void IncreaseStackSize()
+        {
+            int[] newStack = new int[base.size() + this.sizetobeincreased];
+            for (int i = 0; i < base.size(); i++)
+            {
+                newStack[i] = this.StackArray[i];
+            }
+            this.StackArray = newStack;
+        }
+
+    }
+    public class Program
+    {
+
+        public static void Main(string[] args)
+        {
+            DynamicStack ds = new DynamicStack();
+            ds.push(1);
+            Console.WriteLine(ds.size());
+            ds.display();
+            for (int i =2;i<20;i++)
+            {
+                ds.push(i);
+            }
+            Console.WriteLine(ds.size());
+            ds.display();
+
+
+            /* BaseStack stack = new BaseStack(8);
+             Console.WriteLine(stack.size());
+             stack.push(1);
+             stack.push(3);
+             stack.display();
+             stack.push(4);
+             stack.display();
+             Console.WriteLine(stack.pop());
+             stack.push(6);
+             Console.WriteLine(stack.top());
+             stack.push(5);
+             Console.WriteLine(stack.size());
+             stack.display();*/
+            Console.ReadKey();
+        }
+}
+}
